@@ -18,9 +18,11 @@ function Selection(){
 
     return(
         <div className="container" >
+        <div className='button-container'>
             <a href="/checkin" className="button">Check in</a>
             <a href="/checkin" className="button">Check Out</a>
             <a href="/checkin" className="button">Media Release</a>
+        </div>
         </div>
     )
 }
