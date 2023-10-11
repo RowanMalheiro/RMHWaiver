@@ -4,6 +4,7 @@
 }
 
 .container{
+  opacity: calc(1);
   margin-top: 10vh;
   width:70%;
   background-color: white;
@@ -34,6 +35,7 @@
  }
 
  .button-container{
+  margin-top: 20px;
   flex-direction: row;
   }  
 
@@ -57,10 +59,13 @@
   }
  }
 
- .container-text{
+.container-text{
   display: block;
   font-size: 1.4rem;
   margin-right: 20px;
+  margin-left: 10px;
+  margin-top:auto;
+  margin-bottom: auto;
 }
 
 .container-text a{
@@ -104,9 +109,42 @@
 
 .inline-form{
   font: inherit;
+  height:1.8rem;
+  margin-top:auto;
+  margin-bottom:auto;
 }
 
 .error-text{
   color:orangered;
-  font-size: 1rem;
+  font-size: 1.5rem;
+}
+
+canvas{
+  width:80vw;
+  height:50vh;
+}
+
+.field-container{
+  display: flex;
+  flex-direction: row;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.submit-err{
+  font-size: 3rem;
+  text-align: center;
+}
+
+.darkenback{
+  position:absolute;
+  top:-50vh;
+  left:-50vw;
+  width:100vw;
+  height:300vh;
+  background:rgba(0,0,0,0.5);
+}
+
+.text-container{
+  margin-top: 20px;
 }

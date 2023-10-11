@@ -8,12 +8,14 @@ import {createBrowserRouter,
         RouterProvider,
 } from "react-router-dom"
 import Checkin from './js/Checkin';
+import Success from './js/Success';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
     <Route path="/" element={<App/>}/>
     <Route path="/checkin" element={<Checkin/>}/>
+    <Route path="/success" element={<Success/>}></Route>
     </>
   )
 )

@@ -1,5 +1,10 @@
 {
   "dependencies": {
-    "react-router-dom": "^6.16.0"
+    "axios": "^1.5.1",
+    "express": "^4.18.2",
+    "nodemailer": "^6.9.6",
+    "react-router-dom": "^6.16.0",
+    "react-signature-canvas": "^1.0.6",
+    "reactjs-popup": "^2.0.6"
   }
 }
