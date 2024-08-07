@@ -4,17 +4,31 @@ import { useNavigate } from 'react-router-dom';
 import SignatureCanvas from 'react-signature-canvas'
 import Popup from 'reactjs-popup';
 import axios from 'axios'
+import Session from './Session'
 
 function Checkin(){
     const [signature, setSignature] = useState("")
     const [sigError, setSigError] = useState("Invalid signature!")
-    const [opa, setOpacity] = useState(0)
+    const [emailDetails, setEmailDetails] = useState({
+        checked: [],
+        name: "",
+        email: "",
+        phone: "",
+    })
 
     const sigCanvas = useRef({})
     const formik = useRef({})
     const popRef = useRef({})
 
     const navigate = useNavigate()
+
+    useEffect(() => {
+        Session.validateLogin().then((res) => {
+          if(res === false){
+            navigate("/login")
+          }
+        })
+      }, [])
 
     const validateCheck = (value) => {
         let error;
@@ -27,7 +41,7 @@ function Checkin(){
     const validateName = (value) => {
         let error
         if(!value){
-            error = "Invalid name!"
+            error = "Invalid entry!"
         }
         return error
     }
@@ -36,7 +50,6 @@ function Checkin(){
         const sig = sigCanvas.current.getTrimmedCanvas().toDataURL('image/png');
         setSignature(sig)
         setSigError(validateSignature(sig))
-        console.log(sigError)
       };
 
     const validateSignature = (sig) => {
@@ -44,7 +57,6 @@ function Checkin(){
         if(sig == "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAAtJREFUGFdjYAACAAAFAAGq1chRAAAAAElFTkSuQmCC" || sig == ""){
             error = "Invalid signature!"
         }
-        console.log(sig)
         return error
         
     }
@@ -65,32 +77,54 @@ function Checkin(){
         return error
     }
 
-    const handleSub = (errs) => {
-        if(Object.keys(errs) != 0) {
-            console.log("????")
+    const handleSub = async (errs) => {
+        if(Object.keys(errs).length != 0 || sigError != "") {
             popRef.current.open()
+            return
         }
+        sendEmail(emailDetails)
+        returnToHome()
     }
 
     const closePopup = () => {
-        console.log(opa)
         popRef.current.close()
     }
 
     const returnToHome = () => {
-        console.log("redirecting")
         navigate("/success")
     }
 
     const sendEmail = async (data) => {
-        const response = await axios.post('http://localhost:3001/sendmail', {
-            to: 'zmarcgd@gmail.com',
-            subject: `CONFIRMATION for ${data.name}`,
-            text: `<p>${data.name} has succesfully filled the attestation form</p>. 
-            <p>Phone: ${data.phone}</p>
-            <p>Email: ${data.email}</p>`,
+        const response = await axios.post('https://us-central1-rmho-53c23.cloudfunctions.net/api/sendmail', {
+            subject: `ATTESTATION CONFIRMATION for ${data.name}`,
+            text: `<p style="font-size: 2rem">${data.name} has succesfully filled the attestation form</p> 
+            <p style="font-size: 2rem">Phone: ${data.phone}</p>
+            <p style="font-size: 2rem">Email: ${data.email}</p>
+            <p style="font-size: 2rem"> Car Make: ${data.make} Colour: ${data.carColour} License Plate: ${data.plate}`,
             signature: signature
         })
+        return new Promise((resolve) => {resolve(response)})
+    }
+
+    const carErrors = (errs) => {
+        let carErrs = [0,0,0]
+        for(let key of Object.keys(errs)){
+            if(key === "make"){
+                carErrs[0] = 1
+            }
+            else if(key==="plate"){
+                carErrs[1] = 1
+            }
+            else if(key==="carColour"){
+                carErrs[2] = 1
+            }
+        }
+        if(carErrs[0] != 0 || carErrs[1] != 0 || carErrs[2] != 0){
+            return(<><p className="error-text">Invalid entry!</p></>)
+        }
+        else{
+            return(<></>)
+        }
     }
     
 
@@ -101,15 +135,13 @@ function Checkin(){
                 name: "",
                 email: "",
                 phone: "",
+                carMake: "",
+                carColour: "",
+                plate: ""
             }}
-            onSubmit={async (values) => {
-                if(sigError == ""){
-                    console.log(values)
-                    console.log(signature)
-                    sendEmail(values)
-                    returnToHome()
-
-                }
+            onSubmit={(values) => {
+                console.log(values)
+                setEmailDetails(values)
             }}
 
             ref={formik}
@@ -127,9 +159,9 @@ function Checkin(){
                     <p className="container-header">Attestation Form</p>
                 </div>
                     <div className="container">
-                        <div className='button-container'>
+                        <div className='button-container' style={{flexDirection:"row", marginTop:"15px"}}>
                             <Field className="checkbox" type="checkbox" name="checked" value="one" validate={validateCheck}></Field>
-                            <p className="container-text">I have read and agreed to the house policy and rules as stated in the <a href="./Policy.pdf">Guest Families Conduct & Responsibilities Policy</a></p>
+                            <p className="container-text">I have read and agreed to the house policy and rules as stated in the <a href="./Policy.pdf">Guest Families Conduct & Responsibilities Policy</a>!!</p>
                         </div>
                         <p className="error-text">{errors.checked}</p>
                     </div>
@@ -139,12 +171,22 @@ function Checkin(){
                     </div>
                     <p className="error-text">{errors.name}</p>
                 </div>
-                    <div className="container">
+                <div className="container">
+                    <div className="container-text" style={{scale:"1"}}>Car Details:</div>
+                    <div className="text-container">
+                        <p className="container-text" style={{marginBottom:"10px"}}>Car Make: <Field className="inline-form" name="make" id="make" validate={validateName}></Field></p>
+                        <p className="container-text" style={{marginBottom:"10px"}}>Car colour: <Field className="inline-form" name="carColour" id="carColour" validate={validateName}></Field></p>
+                        <p className="container-text" style={{marginBottom:"10px"}}>License Plate: <Field className="inline-form" name="plate" id="plate" validate={validateName}></Field></p>
+                        {carErrors(errors)}
+                    </div>
+                    
+                </div>
+                <div className="container">
                     <div className="button-container">
                     <div className="field-container"><p className='container-text'>Email: </p><Field className="inline-form" name="email" validate={validateEmail}></Field></div>
                         <Popup
                         trigger={(
-                            <button className="button">Signature</button>
+                            <button className="button" onClick={(e) => {e.stopPropagation()}}>Signature</button>
                         )}
                         position="top center"
                         closeOnDocumentClick
@@ -158,9 +200,9 @@ function Checkin(){
                         <p className="error-text" style={{marginLeft: "auto", marginRight: "auto"}}>{errors.phone}</p>    
                     </div>
 
-                    <button type="submit" className="button" onClick={() => handleSub(errors)}>Submit</button>
+                    <button type="submit" className="button" onClick={async () => handleSub(errors)}>Submit</button>
 
-                    </div>
+                </div>
                 </>
             </Form>
 
