@@ -53,6 +53,7 @@
     flex-direction: column;
   }
   .button-container{
+    flex-direction: column;
     margin-top: 15px;
   }  
   .checkbox{
@@ -119,6 +120,7 @@
   height:1.8rem;
   margin-top:auto;
   margin-bottom:auto;
+  max-width: 80%;
 }
 
 .error-text{

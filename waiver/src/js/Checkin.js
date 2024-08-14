@@ -6,15 +6,10 @@ import Popup from 'reactjs-popup';
 import axios from 'axios'
 import Session from './Session'
 
+
 function Checkin(){
     const [signature, setSignature] = useState("")
     const [sigError, setSigError] = useState("Invalid signature!")
-    const [emailDetails, setEmailDetails] = useState({
-        checked: [],
-        name: "",
-        email: "",
-        phone: "",
-    })
 
     const sigCanvas = useRef({})
     const formik = useRef({})
@@ -82,7 +77,7 @@ function Checkin(){
             popRef.current.open()
             return
         }
-        sendEmail(emailDetails)
+        sendEmail(formik.current.values)
         returnToHome()
     }
 
@@ -139,12 +134,8 @@ function Checkin(){
                 carColour: "",
                 plate: ""
             }}
-            onSubmit={(values) => {
-                console.log(values)
-                setEmailDetails(values)
-            }}
 
-            ref={formik}
+            innerRef={formik}
         >{({ errors, touched, isValidating }) => (
             <Form>
                 <>
@@ -200,7 +191,7 @@ function Checkin(){
                         <p className="error-text" style={{marginLeft: "auto", marginRight: "auto"}}>{errors.phone}</p>    
                     </div>
 
-                    <button type="submit" className="button" onClick={async () => handleSub(errors)}>Submit</button>
+                    <button type="submit" className="button" onClick={async () => {handleSub(errors)}}>Submit</button>
 
                 </div>
                 </>

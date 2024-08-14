@@ -5,15 +5,25 @@ import SignatureCanvas from 'react-signature-canvas'
 import Popup from 'reactjs-popup';
 
 function MediaAccept(){
-    const [agree, setAgree] = useState(false)
     const [data, setData] = useState({
         parentName:"",
         children:["",""]
     })
     const [sigError, setSigError] = useState("Fill your signature!")
     const [signature, setSignature] = useState("")
+    const [selectedChecks, setSelectedChecks] = useState([false,false])
+    const [checkError, setCheckError] = useState('Select an option!')
     const sigCanvas = useRef({})
     const navigate = useNavigate()
+
+    useEffect(() => {
+        if(selectedChecks[0] === false && selectedChecks[1] === false){
+            setCheckError('select an option')
+        }
+        else{
+            setCheckError('')
+        }
+    }, [selectedChecks])
 
     const handleChildChange = (i, newValue) => {
         let newChildren = data.children
@@ -33,16 +43,20 @@ function MediaAccept(){
     }
 
     const validate = () => {
-        if(sigError != ""){
-            return false
-        }
-        return agree
+        return sigError === "" && checkError === ''
     }
 
     const sendEmail = async () => {
-        const response = await axios.post('https://us-central1-rmho-53c23.cloudfunctions.net/api/sendmail', {
+        const response = selectedChecks[0] === true 
+        ? await axios.post('https://us-central1-rmho-53c23.cloudfunctions.net/api/sendmail', {
             subject: `Media Form ACCEPTED by ${data.parentName}`,
             text: `<p style="font-size: 2rem">${data.parentName} has accepted the media form</p> 
+            <p style="font-size: 2rem">For children: ${data.children}</p>`,
+            signature: signature
+        })
+        : await axios.post('https://us-central1-rmho-53c23.cloudfunctions.net/api/sendmail', {
+            subject: `Media Form DECLINED by ${data.parentName}`,
+            text: `<p style="font-size: 2rem">${data.parentName} has declined the media form</p> 
             <p style="font-size: 2rem">For children: ${data.children}</p>`,
             signature: signature
         })
@@ -61,15 +75,18 @@ function MediaAccept(){
             error = "Invalid signature!"
         }
         return error
-        
+    }
+
+    const handleChange = (e, i) => {
+        let checks = [false,false]
+        checks[i] = e.target.checked
+        setSelectedChecks(checks)
     }
 
     return(
         <>
             <div className="container">
                 <div className="button-container">
-                    <input type="checkbox" className="checkbox" value={agree} onChange={() => {setAgree(!agree)}} style={{scale:"0.8x", marginTop:"auto", marginBottom:"auto"}} />
-                    <p className="container-text" style={{color:"orangered"}}>*</p>
                     <p className="container-text">I agree with the following text:</p>
                 </div>
                 <p className="container-text" style={{marginTop:"15px"}}>I hereby authorize Ronald McDonald House Charities Ottawa to publish photographs or video taken of my family, a story I have personally shared, and our names, for use in RMHC Ottawa printed publications, social media and website. </p>
@@ -96,6 +113,19 @@ function MediaAccept(){
                             <div className="container" style={{width: "100vw"}}><SignatureCanvas ref={sigCanvas}/><button onClick={saveSignature} className='button'>Submit</button></div>
                 </Popup>
                 <p className="error-text" style={{textAlign:"center", marginBottom:"5px"}}>{sigError}</p>
+            </div>
+            <div className="container">
+                <div className="button-container">
+                    <input type="checkbox" className="checkbox" checked={selectedChecks[0]} onChange={(e) => handleChange(e,0)} />
+                    <p className="container-text">I agree to the Media Release form</p>
+                </div>
+                <div className="button-container" style={{marginBottom:"15px"}}>
+                    <input type="checkbox" className="checkbox" checked={selectedChecks[1]} onChange={(e) => handleChange(e,1)} />
+                    <p className="container-text">I do not agree to the Media Release form</p>
+                </div>
+                <p className="error-text" style={{textAlign:"center", marginBottom:"5px"}}>{checkError}</p>
+            </div>
+            <div className="container">
                 <button className="button" onClick={handleSub}>Submit</button>
             </div>
         </>

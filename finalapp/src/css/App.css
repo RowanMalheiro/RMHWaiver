@@ -1,0 +1,190 @@
+.app{
+  display: block;
+  text-align: -webkit-center;
+}
+
+.container{
+  opacity: calc(1);
+  margin-top: 10vh;
+  background-color: white;
+  border-radius: 20px;
+  box-shadow: 0 0 10px 1px black ;
+  display: flex;
+  flex-direction: column;
+  margin-left:auto;
+  margin-right: auto;
+}
+
+.container img{
+  width:60%;
+  margin: auto;
+  margin-top: 5vh;
+  margin-bottom: 5vh;
+}
+
+.headertext{
+  font-size: 0rem;
+  margin:auto;
+  padding: 3vh;
+}
+
+@media(min-width: 500px){
+ .headertext{
+  font-size: 2.5rem;
+ }
+
+ .button-container{
+  margin-top: 20px;
+  flex-direction: row;
+  }  
+
+  .checkbox{
+    margin-top:auto;
+    margin-bottom: auto;
+    margin-left: 10px;
+    margin-right: 10px;
+    width:30px;
+    height:30px
+  }
+
+  .container{
+    width:70vw;
+  }
+
+  .yt-cont{
+    height:calc(60vw/16*9);
+    width: 60vw;
+    margin:auto;
+    margin-top: 4vh;
+  }
+}
+@media(max-width: 500px){
+  .container{
+    flex-direction: column;
+  }
+  .button-container{
+    flex-direction: column;
+  }  
+  .checkbox{
+    margin-left:auto;
+    margin-right: auto;
+    width:30px;
+    height:30px
+  }
+
+  .container{
+    width:90vw;
+  }
+
+  .yt-cont{
+    height:calc(85vw/16*9);
+    width: 85vw;
+    margin:auto;
+    margin-top: 4vh;
+  }
+ }
+
+.container-text{
+  display: block;
+  font-size: 1.4rem;
+  margin-right: 20px;
+  margin-left: 10px;
+  margin-top:auto;
+  margin-bottom: auto;
+}
+
+.container-text a{
+  color:red;
+}
+
+
+.button{
+  text-decoration: none;
+  cursor: pointer;
+  margin: auto;
+  font-size: 1.5rem;
+  background-color: red;
+  color: white;
+  padding: 10px;
+  margin-top: 3vh;
+  margin-bottom: 3vh;
+  border-radius: 10px;
+  box-shadow: 0 0 5px 0.2px black ;
+}
+
+.button-container{
+  display: flex;
+}
+
+.container-header{
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 3rem;
+}
+
+.checkbox{
+  display: inline-block;
+  background: white;
+  border-radius: 3px;
+  border: 2px solid red;
+  cursor: pointer;
+}
+
+.inline-form{
+  font: inherit;
+  height:1.8rem;
+  margin-top:auto;
+  margin-bottom:auto;
+  margin-left: 10px;
+  overflow-x: hidden;
+}
+
+.error-text{
+  color:orangered;
+  font-size: 1.5rem;
+}
+
+canvas{
+  width:100%;
+  height:50vh;
+}
+
+.field-container{
+  display: flex;
+  flex-direction: row;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 100%;
+}
+
+.submit-err{
+  font-size: 3rem;
+  text-align: center;
+}
+
+.darkenback{
+  position:absolute;
+  top:-50vh;
+  left:-50vw;
+  width:100vw;
+  height:300vh;
+  background:rgba(0,0,0,0.5);
+}
+
+.text-container{
+  margin-top: 20px;
+}
+
+.bmarg{
+  margin-bottom: 20px;
+}
+
+.checkCont{
+  width:40px;
+  margin-left:auto;
+  margin-right:auto;
+}
+
+input{
+  margin:auto;
+}
