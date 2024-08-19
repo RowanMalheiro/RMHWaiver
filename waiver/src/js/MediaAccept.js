@@ -3,6 +3,7 @@ import axios from 'axios'
 import {useNavigate} from 'react-router-dom'
 import SignatureCanvas from 'react-signature-canvas'
 import Popup from 'reactjs-popup';
+import Session from './Session';
 
 function MediaAccept(){
     const [data, setData] = useState({
@@ -18,7 +19,7 @@ function MediaAccept(){
 
     useEffect(() => {
         if(selectedChecks[0] === false && selectedChecks[1] === false){
-            setCheckError('select an option')
+            setCheckError('Select an option!')
         }
         else{
             setCheckError('')
@@ -48,13 +49,13 @@ function MediaAccept(){
 
     const sendEmail = async () => {
         const response = selectedChecks[0] === true 
-        ? await axios.post('https://us-central1-rmho-53c23.cloudfunctions.net/api/sendmail', {
+        ? await Session.sendMail({
             subject: `Media Form ACCEPTED by ${data.parentName}`,
             text: `<p style="font-size: 2rem">${data.parentName} has accepted the media form</p> 
             <p style="font-size: 2rem">For children: ${data.children}</p>`,
             signature: signature
         })
-        : await axios.post('https://us-central1-rmho-53c23.cloudfunctions.net/api/sendmail', {
+        : await Session.sendMail({
             subject: `Media Form DECLINED by ${data.parentName}`,
             text: `<p style="font-size: 2rem">${data.parentName} has declined the media form</p> 
             <p style="font-size: 2rem">For children: ${data.children}</p>`,

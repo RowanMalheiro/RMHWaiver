@@ -15,8 +15,18 @@ const Session = (() => {
         })
     }
 
+    const sendMail = async (emailDetails) => {
+        return new Promise((resolve) => {
+            axios.post('https://us-central1-rmho-53c23.cloudfunctions.net/api/sendmail', emailDetails).then((res) => {
+                resolve(res)
+            })
+        })
+        
+    }
+
     return {
         validateLogin: validateLogin,
+        sendMail: sendMail
     }
 })()
 

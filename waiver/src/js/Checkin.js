@@ -23,7 +23,7 @@ function Checkin(){
             navigate("/login")
           }
         })
-      }, [])
+    }, [])
 
     const validateCheck = (value) => {
         let error;
@@ -90,7 +90,7 @@ function Checkin(){
     }
 
     const sendEmail = async (data) => {
-        const response = await axios.post('https://us-central1-rmho-53c23.cloudfunctions.net/api/sendmail', {
+        const response = await Session.sendMail({
             subject: `ATTESTATION CONFIRMATION for ${data.name}`,
             text: `<p style="font-size: 2rem">${data.name} has succesfully filled the attestation form</p> 
             <p style="font-size: 2rem">Phone: ${data.phone}</p>

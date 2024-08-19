@@ -49,6 +49,7 @@ function Survey(){
         }
     }
 
+
     const handleTxtChange = (e, type, value, i, arr) => {
 
         arr[i][1] = e.target.value 
@@ -62,7 +63,7 @@ function Survey(){
     }
 
     const handleSub = () => {
-        axios.post('https://us-central1-rmho-53c23.cloudfunctions.net/api/sendmail', {
+        Session.sendMail({
             subject: `A Family Filled the Survey`,
             text: `
             <p style="font-size: 2rem">Ethnicity: ${data.ethnicity}</p>
