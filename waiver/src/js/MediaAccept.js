@@ -15,6 +15,7 @@ function MediaAccept(){
     const [selectedChecks, setSelectedChecks] = useState([false,false])
     const [checkError, setCheckError] = useState('Select an option!')
     const sigCanvas = useRef({})
+    const sigBox = useRef({})
     const navigate = useNavigate()
 
     useEffect(() => {
@@ -68,6 +69,7 @@ function MediaAccept(){
         const sig = sigCanvas.current.getTrimmedCanvas().toDataURL('image/png');
         setSignature(sig)
         setSigError(validateSignature(sig))
+        sigBox.current.close()
     }
 
     const validateSignature = (sig) => {
@@ -110,6 +112,7 @@ function MediaAccept(){
                         )}
                         position="top center"
                         closeOnDocumentClick
+                        ref={sigBox}
                         >
                             <div className="container" style={{width: "100vw"}}><SignatureCanvas ref={sigCanvas}/><button onClick={saveSignature} className='button'>Submit</button></div>
                 </Popup>

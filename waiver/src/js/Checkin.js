@@ -14,6 +14,7 @@ function Checkin(){
     const sigCanvas = useRef({})
     const formik = useRef({})
     const popRef = useRef({})
+    const sigBoxRef = useRef({})
 
     const navigate = useNavigate()
 
@@ -42,9 +43,11 @@ function Checkin(){
     }
 
     const saveSignature = () => {
+        console.log(sigBoxRef)
         const sig = sigCanvas.current.getTrimmedCanvas().toDataURL('image/png');
         setSignature(sig)
         setSigError(validateSignature(sig))
+        sigBoxRef.current.close()
       };
 
     const validateSignature = (sig) => {
@@ -181,6 +184,7 @@ function Checkin(){
                         )}
                         position="top center"
                         closeOnDocumentClick
+                        ref={sigBoxRef} 
                         >
                             <div className="container" style={{width: "100vw"}}><SignatureCanvas ref={sigCanvas}  /><button onClick={saveSignature} className='button'>Submit</button></div>
                         </Popup>
