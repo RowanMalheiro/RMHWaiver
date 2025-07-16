@@ -14,6 +14,7 @@ function App() {
         navigate("/login")
       }
     })
+    Session.listenForAdobe();
   })
   return (
     <div className='app'>

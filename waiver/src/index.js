@@ -12,6 +12,7 @@ import Success from './js/Success';
 import Login from './js/Login';
 import Media from './js/Media'
 import Survey from './js/Survey';
+import Payment from './js/Payment';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -22,6 +23,7 @@ const router = createBrowserRouter(
     <Route path="/success" element={<Success/>}></Route>
     <Route path="/media" element={<Media/>}/>
     <Route path="/survey"  element={<Survey/>}/>
+    <Route path="/payment" element={<Payment/>}></Route>
     </>
   )
 )

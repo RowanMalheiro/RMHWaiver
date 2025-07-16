@@ -15,22 +15,13 @@ const {onRequest} = require("firebase-functions/v2/https")
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort('9000');
-app.set('port', port);
+app.set('port', 9000);
 
-/**
+/***
  * Create HTTP server.
  */
 
 var server = http.createServer(app);
-
-/**
- * Listen on provided port, on all network interfaces.
- */
-
-server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
 
 /**
  * Normalize a port into a number, string, or false.
@@ -92,4 +83,4 @@ function onListening() {
   debug('Listening on ' + bind);
 }
 
-exports.api = functions.https.onRequest(app)
+exports.api = onRequest(app)

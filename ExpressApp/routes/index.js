@@ -1,9 +1,13 @@
 var express = require('express');
 const nodemailer = require('nodemailer')
+const config = require('../config.json');
 require('dotenv').config()
 const mongoose = require('mongoose')
 const uri = process.env.DBURL
-mongoose.connect(uri)
+
+if(uri){
+    mongoose.connect(uri)
+}
 const Schema = mongoose.Schema
 const userSchema = new Schema({
     userName:{
@@ -16,8 +20,8 @@ const userSchema = new Schema({
     }
 })
 
-
 var router = express.Router();
+
 
 const getModel = ()=> {
     return mongoose.model('User', userSchema)
@@ -29,6 +33,9 @@ router.get("/", (req, res) => {
 
 router.post('/validate', function(req, res){
     console.log("hiii")
+    if(config.isTesting){
+        res.send(true);
+    }
     const User = getModel()
     User.findOne({userName:req.body.user}).then((result) => {
         console.log(result)
@@ -38,10 +45,6 @@ router.post('/validate', function(req, res){
 
 
 router.post('/sendmail', async (req, res) => {
-
-    console.log(process.env.EMAILPASS)
-    console.log(process.env.EMAILS)
-
   const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
@@ -54,27 +57,51 @@ router.post('/sendmail', async (req, res) => {
    res.send(true)
 })
 
-module.exports = router;
-
 async function sendMail(req, transporter){
     let options
-    let emails = process.env.EMAILS.split(",")
+    let emails = process.env.EMAILS?.split(",")
+    console.log('huh');
+    console.log(config);
+
+    if(config.isTesting){
+        console.log('istesting');
+        emails = ['rowan.malheiro@live.ca'];
+        console.log(emails)
+    }
 
     for(let email of emails){
         options = {
             from: 'rowan.malheiro@live.ca',
             to: email,
             subject: req.body.subject,
-            html: req.body.text+'<img src="cid:unique@cid"/>',
-            
+            html: req.body.signature ? req.body.text+'<img src=\"cid:unique@cid\"/>' : req.body.text,
         }
-        req.body.signature != "" ? options = {...options, attachments: {
+        options = req.body.signature != "" ? {...options, attachments: {
                 filename: "signature.png",
                 path: req.body.signature,
                 cid: 'unique@cid'
-            }} : options.attachments=options.attachments
-            
+            }} : options;
         
-        transporter.sendMail(options).then((resp) => {console.log(resp)})
-        }
+        options = req.body.pdfAttachment ? {
+            ...options,
+            attachments: {
+                filename: "Payment.pdf",
+                content: req.body.pdfAttachment
+            }
+        } : options;
+
+        console.log(options);
+
+        return new Promise((res, rej) => {
+            transporter.sendMail(options).then((resp) => {
+                console.log(resp)
+                res();
+            }).catch((err) => {
+                console.log(err)
+                res();
+            });
+        });
+    }
 }
+
+module.exports = router;

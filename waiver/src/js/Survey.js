@@ -26,7 +26,7 @@ function Survey(){
             if(res === false)
               navigate("/login")
         })
-    }, [])
+    }, [navigate])
 
     /*useEffect(() => {
         console.log(data)

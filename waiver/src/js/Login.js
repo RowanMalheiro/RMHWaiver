@@ -24,6 +24,8 @@ function Login(){
             else{
                 setScale(1)
             }
+        }).catch((err) => {
+            console.log(err);
         })
     }
 

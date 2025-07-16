@@ -5,6 +5,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const nodemailer = require('nodemailer')
 const cors = require('cors')
+const config = require('./config.json');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -31,8 +32,6 @@ app.use(cors(corsOptions))
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
-const PORT = process.env.PORT || 8080;
-
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
@@ -48,5 +47,11 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+//if(config.isTesting){
+//  app.listen(PORT, () => {
+//    console.log('listening on ' + PORT);
+//  });
+//}
 
 module.exports = app;

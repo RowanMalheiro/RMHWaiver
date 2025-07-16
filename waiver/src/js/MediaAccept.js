@@ -62,7 +62,7 @@ function MediaAccept(){
             <p style="font-size: 2rem">For children: ${data.children}</p>`,
             signature: signature
         })
-        return new Promise((resolve) => {resolve(response)})
+        return new Promise((resolve) => {resolve(response)}) //LMFAOOO
     }
 
     const saveSignature = () => {
@@ -74,7 +74,7 @@ function MediaAccept(){
 
     const validateSignature = (sig) => {
         let error = ""
-        if(sig == "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAAtJREFUGFdjYAACAAAFAAGq1chRAAAAAElFTkSuQmCC" || sig == ""){
+        if(sig === "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAAtJREFUGFdjYAACAAAFAAGq1chRAAAAAElFTkSuQmCC" || sig == ""){
             error = "Invalid signature!"
         }
         return error
