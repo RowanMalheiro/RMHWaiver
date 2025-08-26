@@ -6,48 +6,47 @@ const divName = "payment-div"
 let dcview, buffer, saved
 
 function Payment(){
-    const [errorSize, setErrorSize] = useState("0px");
+    const [error, setError] = useState(true);
+    const [checks, setChecks] = useState({
+        selfPayed: undefined,
+        agency: "",
+        contactName: "",
+        contactEmail: ""
+    });
     const navigate = useNavigate();
-    useEffect(() => {
-        handleAdobeEmbed();
-    }, []);
-    
-    const handleAdobeEmbed = async () => {
-        dcview = await Session.getAdobeView(divName);
-        dcview.previewFile({
-            content:{location: {url: "/payment.pdf"}},
-            metaData:{fileName: "payment.pdf"},
-        });
-        dcview.registerCallback(
-            window.AdobeDC.View.Enum.CallbackType.SAVE_API,
-            handleSave
-        );
-    }
 
-    const handleSave = async (metaData, content, options) => {
-        saved = true;
-        console.log('handling save');
-        buffer = content;
-        
-        return {
-            code: window.AdobeDC.View.Enum.ApiResponseCode.SUCCESS,
-            data: {
-              metaData: Object.assign(metaData, {fileName: "edited.pdf"})
-            }
+    useEffect(() => {
+        if(checks.selfPayed === false && (checks.agency === '' || checks.contactEmail === '' || checks.contactEmail === '')){
+            setError(true);
         }
+        else{
+            setError(false)
+        }
+
+    }, [checks])
+    
+    const handleChange = (e, val) => {
+        let newChecks = {
+            ...checks
+        }
+        newChecks[val] = e;
+        setChecks(newChecks);
     }
 
     const handleSub = async () => {
-        console.log(saved);
-        console.log(buffer);
-        if(saved === false){
-            setErrorSize("3vh");
-            return;
-        }
+        console.log(checks.selfPayed)
         await Session.sendMail({
-            subject: 'Third Party Payment Info Submitted',
-            text: `<p style="font-size: 2rem">New Third Party Payment Information form has been submitted. It has been attached to this email as a PDF file.</p> `,
-            pdfAttachment: buffer
+            subject: 'Family Filled out Payment Form',
+            text: `<p style="font-size: 2rem">Hello,</p>
+            <p style="font-size: 2rem">The third party payment form has been filled out by a guest.</p> 
+            <p style="font-size: 2rem">Will A Third party agency pay for their stay: ${checks.selfPayed  === false ? 'No' : 'Yes'}</p>
+            ${checks.selfPayed === false ?
+                `<p style="font-size: 2rem>Name of agency: ${checks.agency}</p>
+                <p style="font-size: 2rem>Contact Person: ${checks.contactName}</p>
+                <p style="font-size: 2rem>Contact Email: ${checks.contactEmail}</p>
+                `
+                : ''
+            }`, 
         }).catch((err) => console.log(err));
 
         navigate("/success");
@@ -55,11 +54,40 @@ function Payment(){
 
     return (
         <>
-        <div id={divName} style={{height: "80vh", border: "black solid 2px"}}></div>
-        <div className="container" style={{borderTopWidth: "5vh", marginTop: "3vh"}}>
-            <button className="button" onClick={handleSub} >Submit</button>
-            <p className='error-text' style={{fontSize:errorSize, textAlign: 'center', margin: '0px'}}>You need to save first!</p>
-        </div>
+            <div className="container">
+                <div className="container-text" style={{textAlign:"center", marginTop:"20px"}}><b>Will a Third Party Agency be convering your stay at RMHC Ottawa?</b></div>
+                <div className="button-container">
+                    <input type="checkbox" className="checkbox" checked={checks['selfPayed'] === true} onChange={(e) => handleChange(true ,'selfPayed')}></input>
+                    <div className="container-text">Yes</div>
+                </div>
+                <div className="button-container" style={{marginBottom:"10px"}}>
+                    <input type="checkbox" className="checkbox" checked={checks['selfPayed'] === false} onChange={(e) => handleChange(false,'selfPayed')}></input>
+                    <div className="container-text">I will be paying for my own stay</div>
+                </div>
+
+            </div>
+            {
+                checks.selfPayed === false ?
+                    <>
+                        <div className="container">
+                            <div className="container-text" style={{marginTop:"15px"}}><b>Name of Third Party Agency:</b></div>
+                            <input type="text" style={{marginLeft:"5px", marginRight:"20%", marginBottom:"15px"}} value={checks.agency} onChange={(e) => handleChange(e.target.value, "agency")} className="inline-form"></input>
+                            <div className="container-text" style={{marginTop:"15px"}}><b>Contact Person:</b></div>
+                            <input type="text" style={{marginLeft:"5px", marginRight:"20%", marginBottom:"15px"}} value={checks.contactName} onChange={(e) => handleChange(e.target.value, "contactName")} className="inline-form"></input>
+                            <div className="container-text" style={{marginTop:"15px"}}><b>Contact Email:</b></div>
+                            <input type="text" style={{marginLeft:"5px", marginRight:"20%", marginBottom:"15px"}} value={checks.contactEmail} onChange={(e) => handleChange(e.target.value, "contactEmail")} className="inline-form"></input>
+                            <p className="error-text" style={{fontSize: error ? "20px" : "0px"}}>These fields are required!</p>
+                        </div>
+                    </> :
+                    <></>
+            }
+            {
+                checks.selfPayed !== undefined && error === false? 
+                    <div className="container">
+                        <button className="button" onClick={handleSub}>Submit</button>
+                    </div>
+                    :<></>
+            }
         </>
     );
 

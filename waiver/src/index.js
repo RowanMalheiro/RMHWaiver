@@ -13,6 +13,7 @@ import Login from './js/Login';
 import Media from './js/Media'
 import Survey from './js/Survey';
 import Payment from './js/Payment';
+import config from './config.json'
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -30,7 +31,17 @@ const router = createBrowserRouter(
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
+  <>
+    {
+      config.isTesting ?
+      <>
+      <div className='sticky'><b>In Development</b></div>
+      </>
+      :
+      <></>
+    }
   <React.StrictMode>
     <RouterProvider router={router}></RouterProvider>
   </React.StrictMode>
+  </>
 );

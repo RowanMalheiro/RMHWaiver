@@ -26,8 +26,12 @@ const Session = (() => {
     }
 
     const sendMail = async (emailDetails) => {
-        console.log('???');
-        console.log(emailDetails);
+        if(config.isTesting === true){
+            return new Promise((res) => {
+                console.log(emailDetails);
+                res(200);
+            });
+        }
         return new Promise((resolve) => {
             console.log(emailDetails);
             axios.post(config.isTesting ? 'http://localhost:8080/sendMail' : 'https://us-central1-rmho-53c23.cloudfunctions.net/api/sendmail', emailDetails).then((res) => {
@@ -52,6 +56,11 @@ const Session = (() => {
 
     const getAdobeView = async (divId) => {
         await adobeListeningPromise;
+        if(!window.AdobeDC){
+            setTimeout(() => {
+                getAdobeView();
+            }, 500);
+        }
         return new window.AdobeDC.View({
             clientId: config.isTesting ? config.adobeKeyTest : config.adobeKey,
             divId: divId

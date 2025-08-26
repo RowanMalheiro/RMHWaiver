@@ -169,3 +169,18 @@ canvas{
   margin-right: 5px;
   margin-bottom: 10px;
 }
+
+.sticky{
+  position: sticky;
+  top:0;
+  width:100vw;
+  background-color: yellow;
+  color:black;
+  height:10vh;
+  font-size: 4vh;
+  border-width: 2px;
+  border-color: black;
+  border-style: solid;
+  text-align: center;
+  line-height: 10vh;
+}
